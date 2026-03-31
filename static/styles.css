@@ -633,9 +633,16 @@ a {
 }
 
 .campaign-vertical .campaign-art img {
-  min-height: 260px;
-  max-height: 360px;
+  min-height: 340px;
+  max-height: 480px;
   object-fit: cover;
+}
+
+.hero-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .campaign-vertical .campaign-copy h1 {
