@@ -297,6 +297,21 @@ a {
   gap: 0.75rem;
 }
 
+.service-hero-media {
+  margin-bottom: 1.8rem;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.service-hero-image {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+}
+
 .language-switcher {
   display: flex;
   align-items: center;
