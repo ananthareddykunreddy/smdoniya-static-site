@@ -71,113 +71,113 @@
   <section class="section">
     <div class="container split appointment-layout">
       <div class="panel">
-        <p class="panel-kicker">Booking Details</p>
+        <p class="panel-kicker">جزئیات رزرو</p>
         <ul>
-          <li>Required fields are validated before saving</li>
-          <li>Multiple files can be attached in one request</li>
-          <li>Records are visible from the admin dashboard after sign-in</li>
-          <li>Allowed files: PDF, JPG, PNG, DOC, DOCX</li>
+          <li>فیلدهای ضروری قبل از ثبت بررسی می‌شوند</li>
+          <li>امکان ارسال چند فایل در یک درخواست</li>
+          <li>پس از ورود، درخواست‌ها در داشبورد مدیریت دیده می‌شوند</li>
+          <li>فایل‌های مجاز: PDF, JPG, PNG, DOC, DOCX</li>
         </ul>
       </div>
-      <form class="appointment-form" action="contact-form.php" method="post" enctype="multipart/form-data">
-  <label for="full_name">Full name</label>
-  <input id="full_name" name="full_name" type="text" required>
+      <form class="contact-form appointment-form" action="contact-form.php" method="post" enctype="multipart/form-data">
+        <label for="full_name">نام و نام خانوادگی</label>
+        <input id="full_name" name="full_name" type="text" required>
 
-  <label for="email">Email</label>
-  <input id="email" name="email" type="email" required>
+        <label for="email">ایمیل</label>
+        <input id="email" name="email" type="email" required>
 
-  <label for="phone">Phone</label>
-  <input id="phone" name="phone" type="tel" required>
+        <label for="phone">تلفن / واتساپ</label>
+        <input id="phone" name="phone" type="text" required>
 
-  <label for="service_type">Service Type</label>
-  <select id="service_type" name="service_type" required>
-    <option value="">Select a service</option>
-    <optgroup label="CAF Services">
-      <option>ISEE</option>
-      <option>730</option>
-      <option>IMU</option>
-      <option>RED/ICRIC</option>
-      <option>Assegno Unico</option>
-      <option>Modello Redditi</option>
-      <option>F24</option>
-      <option>Bonus</option>
-      <option>SPID</option>
-      <option>PEC</option>
-      <option>Cambio Residenza</option>
-      <option>Successioni</option>
-    </optgroup>
-    <optgroup label="Patronato Services">
-      <option>Disoccupazione</option>
-      <option>NASPI / DIS-COLL</option>
-      <option>ADI</option>
-      <option>Maternita</option>
-      <option>Invalidita Civile</option>
-      <option>104</option>
-      <option>Pensione</option>
-      <option>Assegno Unico (Patronato)</option>
-      <option>Dimissioni</option>
-    </optgroup>
-    <optgroup label="Immigration & Consular">
-      <option>Kit Soggiorno Filling</option>
-      <option>Residence Permit Document Support</option>
-      <option>Conversione Permesso</option>
-      <option>Ricongiungimento Familiare</option>
-      <option>Flussi</option>
-      <option>Cittadinanza</option>
-      <option>Asilo Politico (Protezione Internazionale)</option>
-      <option>Document Translation Support</option>
-      <option>International Document Support</option>
-      <option>Passport Application Support</option>
-      <option>OCI Card Application Support</option>
-      <option>Passport Surrender Support</option>
-      <option>Visa Services Support</option>
-      <option>Citizenship (India) Support</option>
-    </optgroup>
-    <optgroup label="Admission Services">
-      <option>University Application Consulting</option>
-      <option>University Admission Document Support</option>
-      <option>Borsa di Studio</option>
-    </optgroup>
-    <optgroup label="Business Services">
-      <option>P. IVA</option>
-      <option>Fattura Elettronica</option>
-      <option>Certificazione Unica</option>
-      <option>Camera di Commercio</option>
-      <option>SCIA</option>
-      <option>Riduzione Contributi INPS</option>
-      <option>Corso SAB (ex REC)</option>
-    </optgroup>
-    <optgroup label="Other Services">
-      <option>Traduzioni e Legalizzazione Documenti</option>
-      <option>Test Lingua Italiana A2</option>
-      <option>Appartamenti / Affitto / Garanzie</option>
-      <option>Assicurazione Auto / Moto</option>
-      <option>Tessera Sanitaria / Codice Fiscale</option>
-      <option>Abbonamento Agevolazione</option>
-      <option>Account Registration (Glovo / Deliveroo / Just Eat)</option>
-      <option>Rider Claims (TFR / Wage Differences)</option>
-      <option>Esenzione TARI</option>
-      <option>Domanda Mensa (Agevolazione Tariffaria)</option>
-      <option>Iscrizione Asilo Nido</option>
-    </optgroup>
-  </select>
+        <label for="service_type">نوع خدمت</label>
+        <select id="service_type" name="service_type" required>
+          <option value="">انتخاب خدمت</option>
+          <optgroup label="خدمات CAF">
+            <option>ISEE</option>
+            <option>730</option>
+            <option>IMU</option>
+            <option>RED/ICRIC</option>
+            <option>Assegno Unico</option>
+            <option>Modello Redditi</option>
+            <option>F24</option>
+            <option>Bonus</option>
+            <option>SPID</option>
+            <option>PEC</option>
+            <option>Cambio Residenza</option>
+            <option>Successioni</option>
+          </optgroup>
+          <optgroup label="خدمات پاتروناتو">
+            <option>Disoccupazione</option>
+            <option>NASPI / DIS-COLL</option>
+            <option>ADI</option>
+            <option>Maternita</option>
+            <option>Invalidita Civile</option>
+            <option>104</option>
+            <option>Pensione</option>
+            <option>Assegno Unico (Patronato)</option>
+            <option>Dimissioni</option>
+          </optgroup>
+          <optgroup label="مهاجرت و کنسولی">
+            <option>Kit Soggiorno Filling</option>
+            <option>Residence Permit Document Support</option>
+            <option>Conversione Permesso</option>
+            <option>Ricongiungimento Familiare</option>
+            <option>Flussi</option>
+            <option>Cittadinanza</option>
+            <option>Asilo Politico (Protezione Internazionale)</option>
+            <option>Document Translation Support</option>
+            <option>International Document Support</option>
+            <option>Passport Application Support</option>
+            <option>OCI Card Application Support</option>
+            <option>Passport Surrender Support</option>
+            <option>Visa Services Support</option>
+            <option>Citizenship (India) Support</option>
+          </optgroup>
+          <optgroup label="خدمات پذیرش">
+            <option>University Application Consulting</option>
+            <option>University Admission Document Support</option>
+            <option>Borsa di Studio</option>
+          </optgroup>
+          <optgroup label="خدمات کسب‌وکار">
+            <option>P. IVA</option>
+            <option>Fattura Elettronica</option>
+            <option>Certificazione Unica</option>
+            <option>Camera di Commercio</option>
+            <option>SCIA</option>
+            <option>Riduzione Contributi INPS</option>
+            <option>Corso SAB (ex REC)</option>
+          </optgroup>
+          <optgroup label="سایر خدمات">
+            <option>Traduzioni e Legalizzazione Documenti</option>
+            <option>Test Lingua Italiana A2</option>
+            <option>Appartamenti / Affitto / Garanzie</option>
+            <option>Assicurazione Auto / Moto</option>
+            <option>Tessera Sanitaria / Codice Fiscale</option>
+            <option>Abbonamento Agevolazione</option>
+            <option>Account Registration (Glovo / Deliveroo / Just Eat)</option>
+            <option>Rider Claims (TFR / Wage Differences)</option>
+            <option>Esenzione TARI</option>
+            <option>Domanda Mensa (Agevolazione Tariffaria)</option>
+            <option>Iscrizione Asilo Nido</option>
+          </optgroup>
+        </select>
 
-  <label for="city">City</label>
-  <input id="city" name="city" type="text" required>
+        <label for="city">شهر</label>
+        <input id="city" name="city" type="text" required>
 
-  <label for="message">Message</label>
-  <textarea id="message" name="message" rows="5" required></textarea>
+        <label for="documents">بارگذاری مدارک</label>
+        <input id="documents" name="documents" type="file" multiple>
+        <p class="form-hint">همه مدارک را یکجا انتخاب کنید (Ctrl/Cmd یا Shift).</p>
 
-  <label for="documents">Upload Documents</label>
-  <input id="documents" name="documents" type="file" multiple>
-  <p class="form-hint">Select all documents at once (Ctrl/Cmd or Shift for multiple selection).</p>
+        <div class="recaptcha-row">
+          <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+        </div>
 
-  <div class="recaptcha-row">
-    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
-  </div>
+        <label for="notes">یادداشت پرونده</label>
+        <textarea id="notes" name="notes" rows="6" placeholder="شرح پرونده، مدارک ناقص یا فوریت."></textarea>
 
-  <button class="btn" type="submit">Send request</button>
-</form>
+        <button class="btn" type="submit">ثبت درخواست وقت</button>
+      </form>
     </div>
   </section>
 </main>
