@@ -6,6 +6,7 @@
   <title>Appointments | SMDONIYA CONSULTING</title>
   <meta name="description" content="CAF services, patronato, immigration and consular support, required document checklists, university consulting, business management, and practical services in Italy.">
   <link rel="icon" href="/static/logo.png">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
@@ -80,21 +81,27 @@
   <label for="phone">Phone</label>
   <input id="phone" name="phone" type="tel" required>
 
-  <label for="service">Service needed</label>
-  <select id="service" name="service">
-    <option>CAF</option>
-    <option>Patronato</option>
-    <option>Immigration</option>
-    <option>Admission</option>
-    <option>Gestione Imprese</option>
-    <option>Others</option>
-  </select>
+  <label for="service_type">Service Type</label>
+  <input id="service_type" name="service_type" type="text" required>
+
+  <label for="preferred_date">Preferred Date</label>
+  <input id="preferred_date" name="preferred_date" type="date" required>
+
+  <label for="preferred_time">Preferred Time</label>
+  <input id="preferred_time" name="preferred_time" type="time" required>
+
+  <label for="city">City</label>
+  <input id="city" name="city" type="text" required>
 
   <label for="message">Message</label>
   <textarea id="message" name="message" rows="5" required></textarea>
 
   <label for="documents">Upload Documents</label>
   <input id="documents" name="documents" type="file" multiple>
+
+  <div class="recaptcha-row">
+    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+  </div>
 
   <button class="btn" type="submit">Send request</button>
 </form>
