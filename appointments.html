@@ -70,7 +70,7 @@
           <li>Allowed files: PDF, JPG, PNG, DOC, DOCX</li>
         </ul>
       </div>
-      <form class="appointment-form" action="contact-form.php" method="post">
+      <form class="appointment-form" action="contact-form.php" method="post" enctype="multipart/form-data">
   <label for="full_name">Full name</label>
   <input id="full_name" name="full_name" type="text" required>
 
@@ -92,6 +92,9 @@
 
   <label for="message">Message</label>
   <textarea id="message" name="message" rows="5" required></textarea>
+
+  <label for="documents">Upload Documents</label>
+  <input id="documents" name="documents" type="file" multiple>
 
   <button class="btn" type="submit">Send request</button>
 </form>
