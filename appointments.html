@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments | ciaocaf</title>
+  <meta name="description" content="CAF services, patronato, immigration and consular support, required document checklists, university consulting, business management, and practical services in Italy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <div class="brand-block">
+        <a href="/" class="brand">
+          <span class="brand-mark">CC</span>
+          <span>
+            <span class="brand-text">ciaocaf</span>
+            <span class="brand-subtext">CAF Bixio Roma</span>
+          </span>
+        </a>
+      </div>
+      <div class="nav-main">
+        <nav aria-label="Main navigation">
+          <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li class="nav-dropdown">
+              <a href="/services">Services</a>
+              <ul class="dropdown-menu" aria-label="Services submenu">
+                <li><a href="/caf-services">CAF</a></li>
+                <li><a href="/patronato-services">Patronato</a></li>
+                <li><a href="/immigration-services">Immigrazione</a></li>
+                <li><a href="/admission-services">Ammissioni</a></li>
+                <li><a href="/support-services">Others</a></li>
+                <li><a href="/business-services">Gestione Imprese</a></li>
+              </ul>
+            </li>
+            <li><a href="/news">News</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="header-actions">
+          
+          <a class="btn btn-small btn-outline" href="/client-area">Client Area</a>
+          <a class="btn btn-small" href="/appointments">Book Appointment</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+    
+  
+
+  
+<main class="page-shell">
+  <section class="section">
+    <div class="container split appointment-layout">
+      <div class="panel">
+        <p class="panel-kicker">Booking Details</p>
+        <ul>
+          <li>Required fields are validated before saving</li>
+          <li>Multiple files can be attached in one request</li>
+          <li>Records are visible from the admin dashboard after sign-in</li>
+          <li>Allowed files: PDF, JPG, PNG, DOC, DOCX</li>
+        </ul>
+      </div>
+      <form class="appointment-form" action="contact-form.php" method="post">
+  <label for="full_name">Full name</label>
+  <input id="full_name" name="full_name" type="text" required>
+
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" required>
+
+  <label for="phone">Phone</label>
+  <input id="phone" name="phone" type="tel" required>
+
+  <label for="service">Service needed</label>
+  <select id="service" name="service">
+    <option>CAF</option>
+    <option>Patronato</option>
+    <option>Immigration</option>
+    <option>Admission</option>
+    <option>Gestione Imprese</option>
+    <option>Others</option>
+  </select>
+
+  <label for="message">Message</label>
+  <textarea id="message" name="message" rows="5" required></textarea>
+
+  <button class="btn" type="submit">Send request</button>
+</form>
+    </div>
+  </section>
+</main>
+
+
+  <footer class="site-footer">
+    <div class="container footer-shell">
+      <div class="footer-lead">
+        <a href="/" class="brand footer-brand">
+          <span class="brand-mark">CC</span>
+          <span>
+            <span class="brand-text">ciaocaf</span>
+            <span class="brand-subtext">CAF, patronato, immigration and document support in Rome</span>
+          </span>
+        </a>
+        <p>CAF services, patronato, immigration, university consulting, business management, and practical services in Italy.</p>
+        <div class="footer-contact-list">
+          <a href="tel:+390631072585">06 31072585</a>
+          <a href="mailto:cafbixio5@gmail.com">cafbixio5@gmail.com</a>
+          <span>Via Bixio 5, 00185 Roma</span>
+          <span>09:00-13:00 | 15:00-19:00</span>
+        </div>
+        <div class="footer-cta-row">
+          <a class="btn btn-small" href="/appointments">Book Appointment</a>
+          <a class="btn btn-small btn-outline" href="/client-area">Client Area</a>
+        </div>
+      </div>
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h3>Servizi</h3>
+          <div class="footer-links">
+            <a href="/services">All Services</a>
+            <a href="/caf-services">CAF Services</a>
+            <a href="/patronato-services">Patronato Services</a>
+            <a href="/immigration-services">Immigration Services</a>
+            <a href="/admission-services">Admission Services</a>
+            <a href="/support-services">Others</a>
+            <a href="/business-services">Gestione Imprese</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Supporto</h3>
+          <div class="footer-links">
+            <a href="/required-documents">Required Documents</a>
+            <a href="/appointments">Appointments</a>
+            <a href="/news">News</a>
+            <a href="/contact">Contact</a>
+            <a href="/client-area">Client Area</a>
+            <a href="/admin/login">Admin</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Servizi Principali</h3>
+          <div class="footer-links">
+            <a href="/caf-services/isee">ISEE</a>
+            <a href="/caf-services/730">730</a>
+            <a href="/caf-services/modello-redditi">Modello Redditi</a>
+            <a href="/patronato-services/naspi-dis-coll">NASPI / DIS-COLL</a>
+            <a href="/immigration-services/kit-soggiorno">Kit Soggiorno</a>
+            <a href="/support-services/tessera-sanitaria-codice-fiscale">Tessera Sanitaria / Codice Fiscale</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; 2026 ciaocaf. All rights reserved.</p>
+      <p>Rome office support for CAF, patronato, immigration and appointment-based assistance.</p>
+    </div>
+  </footer>
+</body>
+</html>
