@@ -17,7 +17,7 @@
         <a href="/" class="brand">
           <span class="brand-mark">CC</span>
           <span>
-            <span class="brand-text">ciaocaf</span>
+            <span class="brand-text">smdoniya consulting</span>
             <span class="brand-subtext">CAF Bixio Roma</span>
           </span>
         </a>
@@ -86,6 +86,36 @@
       </article>
     </div>
   </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="panel contact-form-panel">
+        <p class="panel-kicker">Contact Form</p>
+        <h3>Send your request and upload documents.</h3>
+        <form class="contact-form" action="/contact" method="post" enctype="multipart/form-data">
+          <label for="full_name">Full name</label>
+          <input id="full_name" name="full_name" type="text" required>
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" type="tel" required>
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+
+          <label for="documents">Upload documents (optional)</label>
+          <input id="documents" name="documents" type="file" multiple>
+
+          <label for="captcha">Captcha: 2 + 8</label>
+          <input id="captcha" name="captcha" type="text" inputmode="numeric" required>
+
+          <button class="btn" type="submit">Send message</button>
+        </form>
+      </div>
+    </div>
+  </section>
 </main>
 
 
@@ -149,7 +179,7 @@
       </div>
     </div>
     <div class="container footer-bottom">
-      <p>&copy; 2026 ciaocaf. All rights reserved.</p>
+      <p>&copy; 2026 smdoniya consulting. All rights reserved.</p>
       <p>Rome office support for CAF, patronato, immigration and appointment-based assistance.</p>
     </div>
   </footer>
