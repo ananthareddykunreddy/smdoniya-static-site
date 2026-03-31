@@ -152,6 +152,8 @@ a {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  transform: scale(1.22);
+  transform-origin: center;
 }
 
 .brand-text {
