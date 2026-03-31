@@ -27,8 +27,9 @@
           <ul class="nav-links">
             <li><a href="/">Home</a></li>
             <li class="nav-dropdown">
-              <a href="services.html">Services</a>
+              <button class="nav-link-button" type="button" aria-haspopup="true" aria-expanded="false">Services</button>
               <ul class="dropdown-menu" aria-label="Services submenu">
+                <li><a href="services.html">All Services</a></li>
                 <li><a href="caf-services.html">CAF</a></li>
                 <li><a href="patronato-services.html">Patronato</a></li>
                 <li><a href="immigration-services.html">Immigrazione</a></li>
@@ -108,7 +109,7 @@
           <label for="documents">Upload documents (optional)</label>
           <input id="documents" name="documents" type="file" multiple>
 
-          <label for="captcha">Captcha: 5 + 8</label>
+          <label for="captcha">Captcha: 5 + 4</label>
           <input id="captcha" name="captcha" type="text" inputmode="numeric" required>
 
           <button class="btn" type="submit">Send message</button>
