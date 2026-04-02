@@ -166,7 +166,7 @@
 
         <label>بارگذاری مدارک</label>
         <div class="file-input-stack" data-file-stack>
-          <input name="documents" type="file">
+          <input name="documents[]" type="file">
         </div>
         <button class="btn btn-outline btn-small add-file-btn" type="button" data-add-file>افزودن فایل دیگر</button>
 
@@ -255,7 +255,7 @@
         if (!stack) return;
         const input = document.createElement("input");
         input.type = "file";
-        input.name = "documents";
+        input.name = "documents[]";
         stack.appendChild(input);
       });
     });

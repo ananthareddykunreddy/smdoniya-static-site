@@ -42,6 +42,7 @@ if ($is_appointment) {
     }
 }
 
+$recaptcha_note = "";
 if ($recaptcha_secret !== "" && $recaptcha_response !== "") {
     $verify_url = "https://www.google.com/recaptcha/api/siteverify";
     $verify_data = http_build_query([
@@ -49,24 +50,37 @@ if ($recaptcha_secret !== "" && $recaptcha_response !== "") {
         "response" => $recaptcha_response,
         "remoteip" => $_SERVER["REMOTE_ADDR"] ?? "",
     ]);
-    $context = stream_context_create([
-        "http" => [
-            "method" => "POST",
-            "header" => "Content-type: application/x-www-form-urlencoded\r\n",
-            "content" => $verify_data,
-            "timeout" => 8,
-        ],
-    ]);
-    $verify_result = file_get_contents($verify_url, false, $context);
+
+    $verify_result = false;
+    if (function_exists("curl_init")) {
+        $ch = curl_init($verify_url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $verify_data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+        $verify_result = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $context = stream_context_create([
+            "http" => [
+                "method" => "POST",
+                "header" => "Content-type: application/x-www-form-urlencoded\r\n",
+                "content" => $verify_data,
+                "timeout" => 8,
+            ],
+        ]);
+        $verify_result = file_get_contents($verify_url, false, $context);
+    }
+
     $verify_json = json_decode($verify_result, true);
     $expected_action = $is_appointment ? "appointment" : "contact";
     $score = $verify_json["score"] ?? 0;
     $action_ok = ($recaptcha_action === $expected_action) || (($verify_json["action"] ?? "") === $expected_action);
     if (!$verify_json || empty($verify_json["success"]) || !$action_ok || $score < 0.3) {
-        http_response_code(400);
-        echo "Captcha verification failed. Please try again.";
-        exit;
+        $recaptcha_note = "reCAPTCHA not verified";
     }
+} else {
+    $recaptcha_note = "reCAPTCHA token missing";
 }
 
 $upload_dir = __DIR__ . "/uploads";
@@ -140,6 +154,9 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS appointment_requests (
 $stored_json = json_encode($stored_files);
 
 if ($is_appointment) {
+    if ($recaptcha_note !== "") {
+        $notes = trim($notes . " | " . $recaptcha_note);
+    }
     if ($message === "" && $notes !== "") {
         $message = $notes;
     }
@@ -160,6 +177,9 @@ if ($is_appointment) {
     $stmt->execute();
     $stmt->close();
 } else {
+    if ($recaptcha_note !== "") {
+        $message = trim($message . " | " . $recaptcha_note);
+    }
     $stmt = $mysqli->prepare("INSERT INTO contact_messages (full_name, email, phone, message, uploaded_files) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param(
         "sssss",
