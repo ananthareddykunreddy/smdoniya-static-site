@@ -9,7 +9,7 @@ $db_pass = "Kareddy@2026";
 $recaptcha_secret = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
 $recaptcha_response = $_POST["g-recaptcha-response"] ?? "";
 
-$is_appointment = isset($_POST["preferred_date"]) || isset($_POST["preferred_time"]);
+$is_appointment = !empty($_POST["service_type"]) || !empty($_POST["city"]);
 
 $full_name = trim($_POST["full_name"] ?? "");
 $email = trim($_POST["email"] ?? "");
@@ -21,10 +21,24 @@ $preferred_time = trim($_POST["preferred_time"] ?? "");
 $city = trim($_POST["city"] ?? "");
 $notes = trim($_POST["notes"] ?? "");
 
-if ($full_name === "" || $email === "" || $phone === "" || $message === "") {
+if ($full_name === "" || $email === "" || $phone === "") {
     http_response_code(400);
     echo "Missing required fields.";
     exit;
+}
+
+if ($is_appointment) {
+    if ($service_type === "" || $city === "") {
+        http_response_code(400);
+        echo "Missing required fields.";
+        exit;
+    }
+} else {
+    if ($message === "") {
+        http_response_code(400);
+        echo "Missing required fields.";
+        exit;
+    }
 }
 
 if ($recaptcha_secret !== "" && $recaptcha_response !== "") {
@@ -57,13 +71,23 @@ if (!is_dir($upload_dir)) {
 }
 
 $stored_files = [];
-if (!empty($_FILES["documents"]) && is_array($_FILES["documents"]["name"])) {
-    $file_count = count($_FILES["documents"]["name"]);
+if (!empty($_FILES["documents"])) {
+    $doc_names = $_FILES["documents"]["name"];
+    $doc_errors = $_FILES["documents"]["error"];
+    $doc_tmp = $_FILES["documents"]["tmp_name"];
+
+    if (!is_array($doc_names)) {
+        $doc_names = [$doc_names];
+        $doc_errors = [$doc_errors];
+        $doc_tmp = [$doc_tmp];
+    }
+
+    $file_count = count($doc_names);
     for ($i = 0; $i < $file_count; $i++) {
-        if ($_FILES["documents"]["error"][$i] !== UPLOAD_ERR_OK) {
+        if ($doc_errors[$i] !== UPLOAD_ERR_OK) {
             continue;
         }
-        $original = basename($_FILES["documents"]["name"][$i]);
+        $original = basename($doc_names[$i]);
         $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
         $allowed = ["pdf", "png", "jpg", "jpeg", "doc", "docx"];
         if (!in_array($ext, $allowed, true)) {
@@ -71,7 +95,7 @@ if (!empty($_FILES["documents"]) && is_array($_FILES["documents"]["name"])) {
         }
         $safe_name = uniqid("upload_", true) . "_" . preg_replace("/[^a-zA-Z0-9._-]/", "_", $original);
         $target = $upload_dir . "/" . $safe_name;
-        if (move_uploaded_file($_FILES["documents"]["tmp_name"][$i], $target)) {
+        if (move_uploaded_file($doc_tmp[$i], $target)) {
             $stored_files[] = $safe_name;
         }
     }
@@ -112,6 +136,9 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS appointment_requests (
 $stored_json = json_encode($stored_files);
 
 if ($is_appointment) {
+    if ($message === "" && $notes !== "") {
+        $message = $notes;
+    }
     $stmt = $mysqli->prepare("INSERT INTO appointment_requests (full_name, email, phone, service_type, preferred_date, preferred_time, city, notes, message, uploaded_files) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param(
         "ssssssssss",
