@@ -1,5 +1,8 @@
 <?php
 header("Content-Type: text/html; charset=UTF-8");
+ini_set("log_errors", "1");
+ini_set("error_log", __DIR__ . "/form-errors.log");
+error_reporting(E_ALL);
 
 $db_host = "localhost";
 $db_name = "u744895116_smdoniya_db";
@@ -21,6 +24,11 @@ $preferred_date = trim($_POST["preferred_date"] ?? "");
 $preferred_time = trim($_POST["preferred_time"] ?? "");
 $city = trim($_POST["city"] ?? "");
 $notes = trim($_POST["notes"] ?? "");
+
+if (empty($_POST) && empty($_FILES) && !empty($_SERVER["CONTENT_LENGTH"])) {
+    echo "Upload too large. Please reduce file size and try again.";
+    exit;
+}
 
 if ($full_name === "" || $email === "" || $phone === "") {
     http_response_code(400);
@@ -121,8 +129,7 @@ if (!empty($_FILES["documents"])) {
 
 $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
 if ($mysqli->connect_error) {
-    http_response_code(500);
-    echo "Database connection failed.";
+    echo "Database connection failed. Please contact support.";
     exit;
 }
 
@@ -161,6 +168,10 @@ if ($is_appointment) {
         $message = $notes;
     }
     $stmt = $mysqli->prepare("INSERT INTO appointment_requests (full_name, email, phone, service_type, preferred_date, preferred_time, city, notes, message, uploaded_files) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Database error. Please try again later.";
+        exit;
+    }
     $stmt->bind_param(
         "ssssssssss",
         $full_name,
@@ -181,6 +192,10 @@ if ($is_appointment) {
         $message = trim($message . " | " . $recaptcha_note);
     }
     $stmt = $mysqli->prepare("INSERT INTO contact_messages (full_name, email, phone, message, uploaded_files) VALUES (?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Database error. Please try again later.";
+        exit;
+    }
     $stmt->bind_param(
         "sssss",
         $full_name,
