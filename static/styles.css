@@ -145,8 +145,12 @@ a {
 .footer-legal-right {
   text-align: right;
   justify-self: end;
+  margin-left: auto;
 }
 
+.footer-compact-wide {
+  width: min(1200px, 96vw);
+}
 .footer-legal-links-vertical {
   flex-direction: column;
   align-items: flex-start;
