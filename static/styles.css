@@ -112,6 +112,26 @@ a {
   flex-wrap: wrap;
 }
 
+.footer-legal-text {
+  display: grid;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.footer-legal-text .footer-line {
+  margin: 0;
+}
+
+.footer-legal-text a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footer-legal-text a:hover {
+  color: var(--text);
+}
+
 .nav-wrap,
 .footer-wrap,
 .dashboard-head {
