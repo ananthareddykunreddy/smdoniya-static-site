@@ -140,6 +140,7 @@ a {
 
 .footer-legal-right {
   text-align: right;
+  justify-self: end;
 }
 
 @media (max-width: 860px) {
