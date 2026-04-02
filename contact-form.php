@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 $db_host = "localhost";
 $db_name = "u744895116_smdoniya_db";
-$db_user = "u744895116";
+$db_user = "u744895116_u744895116";
 $db_pass = "Kareddy@2026";
 
 $recaptcha_secret = "6Ldhg6MsAAAAAAzuvFMmcR3kJZi4olXnT1RqnNpa";
