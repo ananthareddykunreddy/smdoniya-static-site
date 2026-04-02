@@ -6,7 +6,7 @@ $db_name = "u744895116_smdoniya_db";
 $db_user = "u744895116";
 $db_pass = "Kareddy@2026";
 
-$recaptcha_secret = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
+$recaptcha_secret = "6Ldhg6MsAAAAAAzuvFMmcR3kJZi4olXnT1RqnNpa";
 $recaptcha_response = $_POST["g-recaptcha-response"] ?? "";
 
 $is_appointment = !empty($_POST["service_type"]) || !empty($_POST["city"]);
