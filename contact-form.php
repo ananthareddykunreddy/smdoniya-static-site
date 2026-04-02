@@ -8,6 +8,7 @@ $db_pass = "Kareddy@2026";
 
 $recaptcha_secret = "6Ldhg6MsAAAAAAzuvFMmcR3kJZi4olXnT1RqnNpa";
 $recaptcha_response = $_POST["g-recaptcha-response"] ?? "";
+$recaptcha_action = $_POST["recaptcha_action"] ?? "";
 
 $is_appointment = !empty($_POST["service_type"]) || !empty($_POST["city"]);
 
@@ -58,7 +59,10 @@ if ($recaptcha_secret !== "" && $recaptcha_response !== "") {
     ]);
     $verify_result = file_get_contents($verify_url, false, $context);
     $verify_json = json_decode($verify_result, true);
-    if (!$verify_json || empty($verify_json["success"])) {
+    $expected_action = $is_appointment ? "appointment" : "contact";
+    $score = $verify_json["score"] ?? 0;
+    $action_ok = ($recaptcha_action === $expected_action) || (($verify_json["action"] ?? "") === $expected_action);
+    if (!$verify_json || empty($verify_json["success"]) || !$action_ok || $score < 0.3) {
         http_response_code(400);
         echo "Captcha verification failed. Please try again.";
         exit;

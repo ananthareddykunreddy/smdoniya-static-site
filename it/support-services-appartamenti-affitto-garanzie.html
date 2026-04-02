@@ -6,7 +6,7 @@
   <title>Appartamenti / Affitto / Garanzie | Others | ciaocaf</title>
   <meta name="description" content="Support organizing housing-related paperwork, rental information, and guarantee documents.">
   <link rel="icon" href="/static/logo.png">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6Ldhg6MsAAAAAECQbU46n3vPdpN2ySAgm5exACJB"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
@@ -194,6 +194,29 @@
         stack.appendChild(input);
       });
     });
+
+    const attachRecaptcha = (form) => {
+      const action = form.getAttribute("data-recaptcha-action");
+      if (!action || typeof grecaptcha === "undefined") return;
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        grecaptcha.ready(() => {
+          grecaptcha.execute("6Ldhg6MsAAAAAECQbU46n3vPdpN2ySAgm5exACJB", { action }).then((token) => {
+            const tokenInput = form.querySelector("input[name='g-recaptcha-response']");
+            if (tokenInput) {
+              tokenInput.value = token;
+            }
+            const actionInput = form.querySelector("input[name='recaptcha_action']");
+            if (actionInput) {
+              actionInput.value = action;
+            }
+            form.submit();
+          });
+        });
+      });
+    };
+
+    document.querySelectorAll("form[data-recaptcha-action]").forEach(attachRecaptcha);
   </script>
 </body>
 </html>
