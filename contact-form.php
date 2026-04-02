@@ -372,5 +372,5 @@ if (!$mail_sent) {
     error_log("Email sending failed for " . $email);
 }
 
-echo "Thank you. Your request has been received and emailed.";
+echo "Thank you. Your request has been received.";
 ?>
