@@ -358,6 +358,20 @@ a {
   width: fit-content;
 }
 
+.form-status {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.form-status.is-success {
+  color: var(--success);
+}
+
+.form-status.is-error {
+  color: var(--error);
+}
+
 .language-switcher a.active {
   background: rgba(15, 118, 110, 0.12);
   color: var(--brand-dark);

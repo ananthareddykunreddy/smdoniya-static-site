@@ -197,6 +197,50 @@
       });
     });
 
+    const resetFileInputs = (form) => {
+      const stack = form.querySelector("[data-file-stack]");
+      if (!stack) return;
+      const inputs = Array.from(stack.querySelectorAll("input[type='file']"));
+      if (inputs.length <= 1) return;
+      inputs.slice(1).forEach((input) => input.remove());
+    };
+
+    const submitAjax = async (form) => {
+      const statusEl = form.querySelector("[data-form-status]");
+      const submitBtn = form.querySelector("button[type='submit']");
+      if (statusEl) {
+        statusEl.textContent = "Sending...";
+        statusEl.classList.remove("is-error", "is-success");
+      }
+      if (submitBtn) {
+        submitBtn.disabled = true;
+      }
+      try {
+        const response = await fetch(form.action || window.location.href, {
+          method: form.method || "POST",
+          body: new FormData(form),
+        });
+        const text = await response.text();
+        if (statusEl) {
+          statusEl.textContent = text || (response.ok ? "Submitted." : "Submission failed.");
+          statusEl.classList.add(response.ok ? "is-success" : "is-error");
+        }
+        if (response.ok) {
+          form.reset();
+          resetFileInputs(form);
+        }
+      } catch (error) {
+        if (statusEl) {
+          statusEl.textContent = "Submission failed. Please try again.";
+          statusEl.classList.add("is-error");
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+        }
+      }
+    };
+
     const attachRecaptcha = (form) => {
       const action = form.getAttribute("data-recaptcha-action");
       if (!action || typeof grecaptcha === "undefined") return;
@@ -212,7 +256,11 @@
             if (actionInput) {
               actionInput.value = action;
             }
-            form.submit();
+            if (form.dataset.ajax === "true") {
+              submitAjax(form);
+            } else {
+              form.submit();
+            }
           });
         });
       });
