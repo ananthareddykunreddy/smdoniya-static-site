@@ -123,6 +123,10 @@ a {
   margin: 0;
 }
 
+.footer-line-nowrap {
+  white-space: nowrap;
+}
+
 .footer-legal-text a {
   color: var(--muted);
   text-decoration: none;
