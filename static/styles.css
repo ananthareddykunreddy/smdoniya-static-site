@@ -147,6 +147,12 @@ a {
   justify-self: end;
 }
 
+.footer-legal-links-vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
 @media (max-width: 860px) {
   .footer-legal-grid {
     grid-template-columns: 1fr;
