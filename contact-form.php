@@ -9,6 +9,13 @@ $db_name = "u744895116_smdoniya_db";
 $db_user = "u744895116_u744895116";
 $db_pass = "Kareddy@2026";
 
+$smtp_host = "smtp.hostinger.com";
+$smtp_port = 465;
+$smtp_user = "INFO@smdoniya.com";
+$smtp_pass = "Subbu@2026";
+$mail_from = "INFO@smdoniya.com";
+$mail_to = "cafbixio5@gmail.com";
+
 $recaptcha_secret = "6Ldhg6MsAAAAAAzuvFMmcR3kJZi4olXnT1RqnNpa";
 $recaptcha_response = $_POST["g-recaptcha-response"] ?? "";
 $recaptcha_action = $_POST["recaptcha_action"] ?? "";
@@ -127,6 +134,124 @@ if (!empty($_FILES["documents"])) {
     }
 }
 
+function smtp_read_response($socket)
+{
+    $data = "";
+    while (!feof($socket)) {
+        $line = fgets($socket, 515);
+        if ($line === false) {
+            break;
+        }
+        $data .= $line;
+        if (preg_match("/^\d{3}\s/", $line)) {
+            break;
+        }
+    }
+    return $data;
+}
+
+function smtp_send_mail($host, $port, $username, $password, $from, $to, $subject, $body, $reply_to = "")
+{
+    $socket = fsockopen("ssl://" . $host, $port, $errno, $errstr, 10);
+    if (!$socket) {
+        error_log("SMTP connect failed: " . $errstr);
+        return false;
+    }
+
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "220") !== 0) {
+        error_log("SMTP greeting failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, "EHLO " . $host . "\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "250") !== 0) {
+        error_log("SMTP EHLO failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, "AUTH LOGIN\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "334") !== 0) {
+        error_log("SMTP AUTH start failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, base64_encode($username) . "\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "334") !== 0) {
+        error_log("SMTP AUTH user failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, base64_encode($password) . "\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "235") !== 0) {
+        error_log("SMTP AUTH pass failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, "MAIL FROM:<" . $from . ">\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "250") !== 0) {
+        error_log("SMTP MAIL FROM failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, "RCPT TO:<" . $to . ">\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "250") !== 0 && strpos($expect, "251") !== 0) {
+        error_log("SMTP RCPT TO failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, "DATA\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "354") !== 0) {
+        error_log("SMTP DATA failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    $encoded_subject = function_exists("mb_encode_mimeheader")
+        ? mb_encode_mimeheader($subject, "UTF-8")
+        : $subject;
+
+    $headers = [
+        "From: " . $from,
+        "To: " . $to,
+        "Subject: " . $encoded_subject,
+        "MIME-Version: 1.0",
+        "Content-Type: text/plain; charset=UTF-8",
+    ];
+    if ($reply_to !== "") {
+        $headers[] = "Reply-To: " . $reply_to;
+    }
+
+    $message = implode("\r\n", $headers) . "\r\n\r\n" . $body;
+    $message = str_replace(["\r\n.\r\n", "\n.\n"], "\r\n..\r\n", $message);
+
+    fwrite($socket, $message . "\r\n.\r\n");
+    $expect = smtp_read_response($socket);
+    if (strpos($expect, "250") !== 0) {
+        error_log("SMTP message failed: " . $expect);
+        fclose($socket);
+        return false;
+    }
+
+    fwrite($socket, "QUIT\r\n");
+    fclose($socket);
+    return true;
+}
+
 $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
 if ($mysqli->connect_error) {
     echo "Database connection failed. Please contact support.";
@@ -210,5 +335,42 @@ if ($is_appointment) {
 
 $mysqli->close();
 
-echo "Thank you. Your request has been received.";
+$file_list = empty($stored_files) ? "None" : implode(", ", $stored_files);
+$mail_subject = $is_appointment ? "New Appointment Request" : "New Contact Request";
+$mail_body = "New submission received.\n\n";
+$mail_body .= "Full name: " . $full_name . "\n";
+$mail_body .= "Email: " . $email . "\n";
+$mail_body .= "Phone: " . $phone . "\n";
+if ($is_appointment) {
+    $mail_body .= "Service: " . $service_type . "\n";
+    $mail_body .= "City: " . $city . "\n";
+    if ($notes !== "") {
+        $mail_body .= "Notes: " . $notes . "\n";
+    }
+} else {
+    $mail_body .= "Message: " . $message . "\n";
+}
+$mail_body .= "Uploaded files: " . $file_list . "\n";
+if ($recaptcha_note !== "") {
+    $mail_body .= "reCAPTCHA: " . $recaptcha_note . "\n";
+}
+$mail_body .= "Submitted from: " . ($_SERVER["REMOTE_ADDR"] ?? "unknown") . "\n";
+
+$mail_sent = smtp_send_mail(
+    $smtp_host,
+    $smtp_port,
+    $smtp_user,
+    $smtp_pass,
+    $mail_from,
+    $mail_to,
+    $mail_subject,
+    $mail_body,
+    $email
+);
+
+if (!$mail_sent) {
+    error_log("Email sending failed for " . $email);
+}
+
+echo "Thank you. Your request has been received and emailed.";
 ?>
