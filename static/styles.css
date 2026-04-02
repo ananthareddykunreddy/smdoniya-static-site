@@ -100,6 +100,18 @@ a {
   justify-content: space-between;
 }
 
+.footer-compact {
+  display: grid;
+  gap: 1.2rem;
+  padding: 2.2rem 0;
+}
+
+.footer-legal-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .nav-wrap,
 .footer-wrap,
 .dashboard-head {
