@@ -181,5 +181,17 @@
       <p>Rome office support for CAF, patronato, immigration, and appointment-based assistance.</p>
     </div>
   </footer>
+  <script>
+    document.querySelectorAll("[data-add-file]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const stack = button.closest("form")?.querySelector("[data-file-stack]");
+        if (!stack) return;
+        const input = document.createElement("input");
+        input.type = "file";
+        input.name = "documents";
+        stack.appendChild(input);
+      });
+    });
+  </script>
 </body>
 </html>

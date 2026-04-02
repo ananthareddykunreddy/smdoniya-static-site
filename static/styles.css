@@ -349,6 +349,15 @@ a {
   font-size: 0.95rem;
 }
 
+.file-input-stack {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.add-file-btn {
+  width: fit-content;
+}
+
 .language-switcher a.active {
   background: rgba(15, 118, 110, 0.12);
   color: var(--brand-dark);

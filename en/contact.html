@@ -117,8 +117,11 @@
           <label for="message">Message</label>
           <textarea id="message" name="message" rows="5" required></textarea>
 
-          <label for="documents">Upload documents (optional)</label>
-          <input id="documents" name="documents" type="file" multiple>
+          <label>Upload documents (optional)</label>
+          <div class="file-input-stack" data-file-stack>
+            <input name="documents" type="file">
+          </div>
+          <button class="btn btn-outline btn-small add-file-btn" type="button" data-add-file>Add another file</button>
 
           <div class="recaptcha-row">
             <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
@@ -197,5 +200,17 @@
       <p>Rome office support for CAF, patronato, immigration, and appointment-based assistance.</p>
     </div>
   </footer>
+  <script>
+    document.querySelectorAll("[data-add-file]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const stack = button.closest("form")?.querySelector("[data-file-stack]");
+        if (!stack) return;
+        const input = document.createElement("input");
+        input.type = "file";
+        input.name = "documents";
+        stack.appendChild(input);
+      });
+    });
+  </script>
 </body>
 </html>

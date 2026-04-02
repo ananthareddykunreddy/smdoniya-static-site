@@ -118,6 +118,24 @@
       </article>
     </div>
   </section>
+
+  
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">ISEE DSU Checklist</p>
+          <h2>Required Documents</h2>
+        </div>
+        <div class="mini-visual-grid">
+          <img src="/static/service-images/custom/isee-checklist-1.jpg" alt="ISEE DSU checklist page 1">
+          <img src="/static/service-images/custom/isee-checklist-2.jpg" alt="ISEE DSU checklist page 2">
+        </div>
+        <div class="section-link-row">
+          <a class="btn btn-outline" href="/static/service-files/isee-checklist.pdf" download>Download ISEE checklist (PDF)</a>
+        </div>
+      </div>
+    </section>
+  
 </main>
 
 
@@ -186,5 +204,17 @@
       <p>Rome office support for CAF, patronato, immigration, and appointment-based assistance.</p>
     </div>
   </footer>
+  <script>
+    document.querySelectorAll("[data-add-file]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const stack = button.closest("form")?.querySelector("[data-file-stack]");
+        if (!stack) return;
+        const input = document.createElement("input");
+        input.type = "file";
+        input.name = "documents";
+        stack.appendChild(input);
+      });
+    });
+  </script>
 </body>
 </html>
