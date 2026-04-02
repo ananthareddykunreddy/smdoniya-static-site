@@ -150,7 +150,7 @@ function smtp_read_response($socket)
     return $data;
 }
 
-function smtp_send_mail($host, $port, $username, $password, $from, $to, $subject, $body, $reply_to = "")
+function smtp_send_mail($host, $port, $username, $password, $from, $to, $subject, $body, $reply_to = "", $attachments = [])
 {
     $socket = fsockopen("ssl://" . $host, $port, $errno, $errstr, 10);
     if (!$socket) {
@@ -225,18 +225,54 @@ function smtp_send_mail($host, $port, $username, $password, $from, $to, $subject
         ? mb_encode_mimeheader($subject, "UTF-8")
         : $subject;
 
+    $boundary = "=_SMDONIYA_" . md5(uniqid((string)mt_rand(), true));
     $headers = [
         "From: " . $from,
         "To: " . $to,
         "Subject: " . $encoded_subject,
         "MIME-Version: 1.0",
-        "Content-Type: text/plain; charset=UTF-8",
+        "Content-Type: multipart/mixed; boundary=\"" . $boundary . "\"",
     ];
     if ($reply_to !== "") {
         $headers[] = "Reply-To: " . $reply_to;
     }
 
-    $message = implode("\r\n", $headers) . "\r\n\r\n" . $body;
+    $message = implode("\r\n", $headers) . "\r\n\r\n";
+    $message .= "--" . $boundary . "\r\n";
+    $message .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
+    $message .= $body . "\r\n\r\n";
+
+    if (!empty($attachments)) {
+        foreach ($attachments as $file_path => $file_name) {
+            if (!is_readable($file_path)) {
+                continue;
+            }
+            $file_contents = file_get_contents($file_path);
+            if ($file_contents === false) {
+                continue;
+            }
+            $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            $mime = "application/octet-stream";
+            if (in_array($ext, ["jpg", "jpeg"], true)) {
+                $mime = "image/jpeg";
+            } elseif ($ext === "png") {
+                $mime = "image/png";
+            } elseif ($ext === "pdf") {
+                $mime = "application/pdf";
+            } elseif ($ext === "doc") {
+                $mime = "application/msword";
+            } elseif ($ext === "docx") {
+                $mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            }
+            $message .= "--" . $boundary . "\r\n";
+            $message .= "Content-Type: " . $mime . "; name=\"" . $file_name . "\"\r\n";
+            $message .= "Content-Transfer-Encoding: base64\r\n";
+            $message .= "Content-Disposition: attachment; filename=\"" . $file_name . "\"\r\n\r\n";
+            $message .= chunk_split(base64_encode($file_contents)) . "\r\n";
+        }
+    }
+    $message .= "--" . $boundary . "--\r\n";
     $message = str_replace(["\r\n.\r\n", "\n.\n"], "\r\n..\r\n", $message);
 
     fwrite($socket, $message . "\r\n.\r\n");
@@ -356,6 +392,14 @@ if ($recaptcha_note !== "") {
 }
 $mail_body .= "Submitted from: " . ($_SERVER["REMOTE_ADDR"] ?? "unknown") . "\n";
 
+$attachment_map = [];
+if (!empty($stored_files)) {
+    foreach ($stored_files as $stored_file) {
+        $path = $upload_dir . "/" . $stored_file;
+        $attachment_map[$path] = $stored_file;
+    }
+}
+
 $mail_sent = smtp_send_mail(
     $smtp_host,
     $smtp_port,
@@ -365,7 +409,8 @@ $mail_sent = smtp_send_mail(
     $mail_to,
     $mail_subject,
     $mail_body,
-    $email
+    $email,
+    $attachment_map
 );
 
 if (!$mail_sent) {
