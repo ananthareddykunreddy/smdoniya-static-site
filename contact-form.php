@@ -104,6 +104,7 @@ if (!is_dir($upload_dir)) {
 }
 
 $stored_files = [];
+$stored_files_meta = [];
 if (!empty($_FILES["documents"])) {
     $doc_names = $_FILES["documents"]["name"];
     $doc_errors = $_FILES["documents"]["error"];
@@ -130,6 +131,11 @@ if (!empty($_FILES["documents"])) {
         $target = $upload_dir . "/" . $safe_name;
         if (move_uploaded_file($doc_tmp[$i], $target)) {
             $stored_files[] = $safe_name;
+            $stored_files_meta[] = [
+                "original" => $original,
+                "stored" => $safe_name,
+                "path" => "uploads/" . $safe_name,
+            ];
         }
     }
 }
@@ -319,7 +325,7 @@ $mysqli->query("CREATE TABLE IF NOT EXISTS appointment_requests (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-$stored_json = json_encode($stored_files);
+$stored_json = json_encode($stored_files_meta);
 
 if ($is_appointment) {
     if ($recaptcha_note !== "") {
@@ -371,7 +377,16 @@ if ($is_appointment) {
 
 $mysqli->close();
 
-$file_list = empty($stored_files) ? "None" : implode(", ", $stored_files);
+$file_list = "None";
+if (!empty($stored_files_meta)) {
+    $display_names = array_map(function ($item) {
+        return $item["original"] ?? "";
+    }, $stored_files_meta);
+    $display_names = array_filter($display_names);
+    if (!empty($display_names)) {
+        $file_list = implode(", ", $display_names);
+    }
+}
 $mail_subject = $is_appointment ? "New Appointment Request" : "New Contact Request";
 $mail_body = "New submission received.\n\n";
 $mail_body .= "Full name: " . $full_name . "\n";
