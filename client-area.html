@@ -69,40 +69,55 @@
   
 <main class="page-shell">
   <section class="section">
-    <div class="container cards cards-two">
-      <article class="card">
-        <span class="card-tag">Current Use</span>
-        <h3>Appointment and document workflow</h3>
-        <p>Clients can already book appointments and upload files through the booking form.</p>
-        <a href="appointments.html">Open appointment form</a>
-      </article>
-      <article class="card">
-        <span class="card-tag">Future Use</span>
-        <h3>Digital follow-up area</h3>
-        <p>This area can later connect to file history, signed forms, and appointment-status updates.</p>
-        <a href="required-documents.html">Open document hub</a>
-      </article>
+    <div class="container split">
+      <div class="panel">
+        <p class="panel-kicker">Client Login</p>
+        <form id="login-form" class="contact-form">
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" required>
+
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" minlength="8" required>
+
+          <div id="login-status" class="form-status" role="status" aria-live="polite"></div>
+          <button class="btn" type="submit">Sign In</button>
+        </form>
+      </div>
+      <div class="panel">
+        <p class="panel-kicker">New Client Registration</p>
+        <form id="register-form" class="contact-form">
+          <label for="register-name">Full name</label>
+          <input id="register-name" name="full_name" type="text" required>
+
+          <label for="register-phone">Phone</label>
+          <input id="register-phone" name="phone" type="text">
+
+          <label for="register-email">Email</label>
+          <input id="register-email" name="email" type="email" required>
+
+          <label for="register-password">Password</label>
+          <input id="register-password" name="password" type="password" minlength="8" required>
+
+          <input name="preferred_language" type="hidden" value="en">
+          <div id="register-status" class="form-status" role="status" aria-live="polite"></div>
+          <button class="btn" type="submit">Create Account</button>
+        </form>
+      </div>
     </div>
   </section>
 
   <section class="section section-alt">
-    <div class="container split">
-      <div class="panel">
-      <p class="panel-kicker">Online Services</p>
-      <ul>
-        <li>Book appointments by service type</li>
-        <li>Review required documents before the visit</li>
-        <li>Prepare files for tax, welfare, immigration, and business cases</li>
-      </ul>
-    </div>
-    <div class="panel">
-      <p class="panel-kicker">Future Expansion</p>
-      <ul>
-        <li>Document-history access</li>
-        <li>Digital signature workflows</li>
-        <li>Client status updates and reminders</li>
-      </ul>
-    </div>
+    <div class="container">
+      <div id="client-account-panel" class="panel" style="display:none;">
+        <p class="panel-kicker">My Account</p>
+        <p><strong>Name:</strong> <span data-user-name>-</span></p>
+        <p><strong>Email:</strong> <span data-user-email>-</span></p>
+        <p><strong>Phone:</strong> <span data-user-phone>-</span></p>
+        <div class="footer-cta-row">
+          <a class="btn btn-small" href="appointments.html">Book Appointment</a>
+          <button id="logout-btn" class="btn btn-small btn-outline" type="button">Logout</button>
+        </div>
+      </div>
     </div>
   </section>
 </main>
@@ -232,5 +247,6 @@
 
     document.querySelectorAll("form[data-recaptcha-action]").forEach(attachRecaptcha);
   </script>
+  <script src="/static/client-auth.js"></script>
 </body>
 </html>
