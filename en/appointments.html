@@ -74,6 +74,7 @@
         <p class="panel-kicker">Booking Details</p>
         <ul>
           <li>Required fields are validated before saving</li>
+          <li>Mandatory documents must be uploaded before submitting the request</li>
           <li>Multiple files can be attached in one request</li>
           <li>Records are visible from the admin dashboard after sign-in</li>
           <li>Allowed files: PDF, JPG, PNG, DOC, DOCX</li>
@@ -165,7 +166,20 @@
         <label for="city">City</label>
         <input id="city" name="city" type="text" required>
 
-        <label>Upload Documents</label>
+        <label>Mandatory Documents</label>
+        <div class="file-input-stack mandatory-file-stack">
+          <label for="mandatory_document_id">Identity Document</label>
+          <input id="mandatory_document_id" name="mandatory_documents[]" type="file" required>
+
+          <label for="mandatory_document_tax">Tax Code / Codice Fiscale</label>
+          <input id="mandatory_document_tax" name="mandatory_documents[]" type="file" required>
+
+          <label for="mandatory_document_service">Main Service Document</label>
+          <input id="mandatory_document_service" name="mandatory_documents[]" type="file" required>
+        </div>
+        <p class="form-hint">Upload mandatory documents before submitting.</p>
+
+        <label>Extra Documents (Optional)</label>
         <div class="file-input-stack" data-file-stack>
           <input name="documents[]" type="file">
         </div>

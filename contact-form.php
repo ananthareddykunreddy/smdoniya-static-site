@@ -103,12 +103,20 @@ if (!is_dir($upload_dir)) {
     mkdir($upload_dir, 0755, true);
 }
 
-$stored_files = [];
-$stored_files_meta = [];
-if (!empty($_FILES["documents"])) {
-    $doc_names = $_FILES["documents"]["name"];
-    $doc_errors = $_FILES["documents"]["error"];
-    $doc_tmp = $_FILES["documents"]["tmp_name"];
+$allowed_extensions = ["pdf", "png", "jpg", "jpeg", "doc", "docx"];
+$collect_uploaded_files = function ($field_name, $group_label = "extra") use ($upload_dir, $allowed_extensions) {
+    $result = [
+        "stored" => [],
+        "meta" => [],
+    ];
+
+    if (empty($_FILES[$field_name])) {
+        return $result;
+    }
+
+    $doc_names = $_FILES[$field_name]["name"];
+    $doc_errors = $_FILES[$field_name]["error"];
+    $doc_tmp = $_FILES[$field_name]["tmp_name"];
 
     if (!is_array($doc_names)) {
         $doc_names = [$doc_names];
@@ -118,27 +126,48 @@ if (!empty($_FILES["documents"])) {
 
     $file_count = count($doc_names);
     for ($i = 0; $i < $file_count; $i++) {
-        if ($doc_errors[$i] !== UPLOAD_ERR_OK) {
+        if (($doc_errors[$i] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
             continue;
         }
-        $original = basename($doc_names[$i]);
+
+        $original = basename((string)($doc_names[$i] ?? ""));
+        if ($original === "") {
+            continue;
+        }
+
         $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
-        $allowed = ["pdf", "png", "jpg", "jpeg", "doc", "docx"];
-        if (!in_array($ext, $allowed, true)) {
+        if (!in_array($ext, $allowed_extensions, true)) {
             continue;
         }
-        $safe_name = uniqid("upload_", true) . "_" . preg_replace("/[^a-zA-Z0-9._-]/", "_", $original);
+
+        $prefix = $group_label === "mandatory" ? "mandatory_" : "upload_";
+        $safe_name = uniqid($prefix, true) . "_" . preg_replace("/[^a-zA-Z0-9._-]/", "_", $original);
         $target = $upload_dir . "/" . $safe_name;
         if (move_uploaded_file($doc_tmp[$i], $target)) {
-            $stored_files[] = $safe_name;
-            $stored_files_meta[] = [
+            $result["stored"][] = $safe_name;
+            $result["meta"][] = [
                 "original" => $original,
                 "stored" => $safe_name,
                 "path" => "uploads/" . $safe_name,
+                "group" => $group_label,
             ];
         }
     }
+
+    return $result;
+};
+
+$mandatory_uploads = $collect_uploaded_files("mandatory_documents", "mandatory");
+$extra_uploads = $collect_uploaded_files("documents", "extra");
+
+if ($is_appointment && count($mandatory_uploads["meta"]) < 3) {
+    http_response_code(400);
+    echo "Please upload all mandatory documents.";
+    exit;
 }
+
+$stored_files = array_merge($mandatory_uploads["stored"], $extra_uploads["stored"]);
+$stored_files_meta = array_merge($mandatory_uploads["meta"], $extra_uploads["meta"]);
 
 function smtp_read_response($socket)
 {
@@ -378,13 +407,32 @@ if ($is_appointment) {
 $mysqli->close();
 
 $file_list = "None";
+$mandatory_file_list = "None";
+$extra_file_list = "None";
 if (!empty($stored_files_meta)) {
-    $display_names = array_map(function ($item) {
-        return $item["original"] ?? "";
-    }, $stored_files_meta);
-    $display_names = array_filter($display_names);
+    $display_names = [];
+    $mandatory_names = [];
+    $extra_names = [];
+    foreach ($stored_files_meta as $item) {
+        $name = $item["original"] ?? "";
+        if ($name === "") {
+            continue;
+        }
+        $display_names[] = $name;
+        if (($item["group"] ?? "") === "mandatory") {
+            $mandatory_names[] = $name;
+        } else {
+            $extra_names[] = $name;
+        }
+    }
     if (!empty($display_names)) {
         $file_list = implode(", ", $display_names);
+    }
+    if (!empty($mandatory_names)) {
+        $mandatory_file_list = implode(", ", $mandatory_names);
+    }
+    if (!empty($extra_names)) {
+        $extra_file_list = implode(", ", $extra_names);
     }
 }
 $mail_subject = $is_appointment ? "New Appointment Request" : "New Contact Request";
@@ -398,6 +446,8 @@ if ($is_appointment) {
     if ($notes !== "") {
         $mail_body .= "Notes: " . $notes . "\n";
     }
+    $mail_body .= "Mandatory files: " . $mandatory_file_list . "\n";
+    $mail_body .= "Extra files: " . $extra_file_list . "\n";
 } else {
     $mail_body .= "Message: " . $message . "\n";
 }

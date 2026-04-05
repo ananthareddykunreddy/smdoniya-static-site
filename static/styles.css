@@ -426,6 +426,17 @@ a {
   gap: 0.6rem;
 }
 
+.mandatory-file-stack {
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.mandatory-file-stack label {
+  margin: 0.2rem 0 0;
+}
+
 .add-file-btn {
   width: fit-content;
 }

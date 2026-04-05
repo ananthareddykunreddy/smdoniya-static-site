@@ -74,6 +74,7 @@
         <p class="panel-kicker">Dettagli prenotazione</p>
         <ul>
           <li>I campi obbligatori vengono verificati prima del salvataggio</li>
+          <li>I documenti obbligatori devono essere caricati per inviare la richiesta</li>
           <li>Puoi allegare piu file nella stessa richiesta</li>
           <li>Le richieste sono visibili nella dashboard admin dopo l&#39;accesso</li>
           <li>File consentiti: PDF, JPG, PNG, DOC, DOCX</li>
@@ -165,7 +166,20 @@
         <label for="city">Citta</label>
         <input id="city" name="city" type="text" required>
 
-        <label>Carica documenti</label>
+        <label>Documenti obbligatori</label>
+        <div class="file-input-stack mandatory-file-stack">
+          <label for="mandatory_document_id">Documento di identita</label>
+          <input id="mandatory_document_id" name="mandatory_documents[]" type="file" required>
+
+          <label for="mandatory_document_tax">Codice fiscale</label>
+          <input id="mandatory_document_tax" name="mandatory_documents[]" type="file" required>
+
+          <label for="mandatory_document_service">Documento principale della pratica</label>
+          <input id="mandatory_document_service" name="mandatory_documents[]" type="file" required>
+        </div>
+        <p class="form-hint">Carica i documenti obbligatori prima dell&#39;invio.</p>
+
+        <label>Documenti extra (opzionale)</label>
         <div class="file-input-stack" data-file-stack>
           <input name="documents[]" type="file">
         </div>

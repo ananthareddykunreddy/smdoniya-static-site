@@ -74,6 +74,7 @@
         <p class="panel-kicker">جزئیات رزرو</p>
         <ul>
           <li>فیلدهای ضروری قبل از ثبت بررسی می‌شوند</li>
+          <li>برای ارسال درخواست، بارگذاری مدارک اجباری الزامی است</li>
           <li>امکان ارسال چند فایل در یک درخواست</li>
           <li>پس از ورود، درخواست‌ها در داشبورد مدیریت دیده می‌شوند</li>
           <li>فایل‌های مجاز: PDF, JPG, PNG, DOC, DOCX</li>
@@ -165,7 +166,20 @@
         <label for="city">شهر</label>
         <input id="city" name="city" type="text" required>
 
-        <label>بارگذاری مدارک</label>
+        <label>مدارک اجباری</label>
+        <div class="file-input-stack mandatory-file-stack">
+          <label for="mandatory_document_id">مدرک هویت</label>
+          <input id="mandatory_document_id" name="mandatory_documents[]" type="file" required>
+
+          <label for="mandatory_document_tax">کد مالیاتی / Codice Fiscale</label>
+          <input id="mandatory_document_tax" name="mandatory_documents[]" type="file" required>
+
+          <label for="mandatory_document_service">مدرک اصلی خدمت</label>
+          <input id="mandatory_document_service" name="mandatory_documents[]" type="file" required>
+        </div>
+        <p class="form-hint">پیش از ارسال، مدارک اجباری را بارگذاری کنید.</p>
+
+        <label>مدارک اضافی (اختیاری)</label>
         <div class="file-input-stack" data-file-stack>
           <input name="documents[]" type="file">
         </div>
