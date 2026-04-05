@@ -1,6 +1,7 @@
 (function () {
   const API_BASE = "/api/auth";
   const TOKEN_KEY = "sm_client_token";
+  const GOOGLE_CLIENT_ID = String(window.SM_GOOGLE_CLIENT_ID || "").trim();
 
   const i18n = {
     en: {
@@ -20,6 +21,9 @@
       okLogin: "Login successful.",
       okRegister: "Registration successful.",
       fail: "Request failed. Please try again.",
+      googleLabel: "Continue with Google",
+      googleSuccess: "Google login successful.",
+      googleNotConfigured: "Google login is not configured yet.",
     },
     it: {
       loginTitle: "Accesso Cliente",
@@ -38,32 +42,35 @@
       okLogin: "Accesso completato.",
       okRegister: "Registrazione completata.",
       fail: "Operazione non riuscita. Riprova.",
+      googleLabel: "Continua con Google",
+      googleSuccess: "Accesso Google completato.",
+      googleNotConfigured: "Accesso Google non ancora configurato.",
     },
     fa: {
-      loginTitle: "ورود مشتری",
-      registerTitle: "ثبت‌نام مشتری جدید",
-      accountTitle: "حساب من",
-      signIn: "ورود",
-      register: "ایجاد حساب",
-      logout: "خروج",
-      name: "نام",
-      email: "ایمیل",
-      phone: "تلفن",
-      fullName: "نام کامل",
-      password: "رمز عبور",
-      book: "رزرو وقت",
-      sending: "در حال ارسال...",
-      okLogin: "ورود با موفقیت انجام شد.",
-      okRegister: "ثبت‌نام با موفقیت انجام شد.",
-      fail: "درخواست ناموفق بود. دوباره تلاش کنید.",
+      loginTitle: "Client Login",
+      registerTitle: "Client Registration",
+      accountTitle: "My Account",
+      signIn: "Sign In",
+      register: "Create Account",
+      logout: "Logout",
+      name: "Name",
+      email: "Email",
+      phone: "Phone",
+      fullName: "Full name",
+      password: "Password",
+      book: "Book Appointment",
+      sending: "Sending...",
+      okLogin: "Login successful.",
+      okRegister: "Registration successful.",
+      fail: "Request failed. Please try again.",
+      googleLabel: "Continue with Google",
+      googleSuccess: "Google login successful.",
+      googleNotConfigured: "Google login is not configured yet.",
     },
   };
 
-  const lang = document.documentElement.lang === "it"
-    ? "it"
-    : document.documentElement.lang === "fa"
-      ? "fa"
-      : "en";
+  const htmlLang = String(document.documentElement.lang || "").toLowerCase();
+  const lang = htmlLang === "it" ? "it" : htmlLang === "fa" ? "fa" : "en";
   const t = i18n[lang];
 
   const escapeHtml = (value) =>
@@ -76,8 +83,27 @@
 
   function ensureClientAreaMarkup() {
     if (document.getElementById("login-form")) {
+      if (!document.getElementById("google-login-button")) {
+        const loginForm = document.getElementById("login-form");
+        if (loginForm) {
+          const googleHolder = document.createElement("div");
+          googleHolder.id = "google-login-button";
+          googleHolder.className = "google-login-wrap";
+          loginForm.appendChild(googleHolder);
+        }
+      }
+      if (!document.getElementById("admin-login-link-inline")) {
+        const loginForm = document.getElementById("login-form");
+        if (loginForm) {
+          const adminLink = document.createElement("p");
+          adminLink.className = "google-login-note";
+          adminLink.innerHTML = '<a id="admin-login-link-inline" href="/admin-login.html">Admin Login</a>';
+          loginForm.appendChild(adminLink);
+        }
+      }
       return;
     }
+
     const main = document.querySelector("main.page-shell");
     if (!main) return;
 
@@ -93,6 +119,8 @@
               <input id="login-password" name="password" type="password" minlength="8" required>
               <div id="login-status" class="form-status" role="status" aria-live="polite"></div>
               <button class="btn" type="submit">${escapeHtml(t.signIn)}</button>
+              <div id="google-login-button" class="google-login-wrap"></div>
+              <p class="google-login-note"><a id="admin-login-link-inline" href="/admin-login.html">Admin Login</a></p>
             </form>
           </div>
           <div class="panel">
@@ -139,6 +167,7 @@
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
+
     const response = await fetch(`${API_BASE}${path}`, {
       method: options.method || "GET",
       headers,
@@ -237,6 +266,89 @@
     }
   }
 
+  function isGoogleConfigured() {
+    return GOOGLE_CLIENT_ID !== "" && GOOGLE_CLIENT_ID.indexOf("REPLACE_WITH_") !== 0;
+  }
+
+  function ensureGoogleScript() {
+    return new Promise((resolve, reject) => {
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        resolve(true);
+        return;
+      }
+
+      const existing = document.querySelector('script[data-google-identity="1"]');
+      if (existing) {
+        existing.addEventListener("load", () => resolve(true));
+        existing.addEventListener("error", () => reject(new Error("Google script failed to load")));
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.dataset.googleIdentity = "1";
+      script.addEventListener("load", () => resolve(true));
+      script.addEventListener("error", () => reject(new Error("Google script failed to load")));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function initGoogleLogin() {
+    const container = document.getElementById("google-login-button");
+    if (!container) return;
+
+    if (!isGoogleConfigured()) {
+      container.innerHTML = `<p class="google-login-note">${escapeHtml(t.googleNotConfigured)}</p>`;
+      return;
+    }
+
+    try {
+      await ensureGoogleScript();
+
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          if (!response || !response.credential) {
+            setStatus("login-status", t.fail, false);
+            return;
+          }
+          setStatus("login-status", t.sending, true);
+          try {
+            const result = await request("/google-login.php", {
+              method: "POST",
+              body: {
+                credential: response.credential,
+                preferred_language: lang,
+              },
+            });
+            localStorage.setItem(TOKEN_KEY, result.token);
+            renderUser(result.user || {});
+            setStatus("login-status", t.googleSuccess, true);
+          } catch (error) {
+            setStatus("login-status", error.message || t.fail, false);
+          }
+        },
+      });
+
+      window.google.accounts.id.renderButton(container, {
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "pill",
+        width: 280,
+      });
+
+      const label = document.createElement("p");
+      label.className = "google-login-note";
+      label.textContent = t.googleLabel;
+      container.appendChild(label);
+    } catch (_) {
+      container.innerHTML = `<p class="google-login-note">${escapeHtml(t.fail)}</p>`;
+    }
+  }
+
   async function bootstrapSession() {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) return;
@@ -250,5 +362,6 @@
 
   ensureClientAreaMarkup();
   bindForms();
+  initGoogleLogin();
   bootstrapSession();
 })();

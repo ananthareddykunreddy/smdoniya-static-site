@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | SM SOLUTIONS</title>
+  <link rel="icon" href="/static/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="section">
+      <div class="container split">
+        <div class="panel">
+          <p class="panel-kicker">Admin Access</p>
+          <h2>Request Management Login</h2>
+          <p>Use admin credentials to access contact and appointment requests.</p>
+          <form id="admin-login-form" class="contact-form">
+            <label for="admin-email">Email</label>
+            <input id="admin-email" name="email" type="email" required>
+
+            <label for="admin-password">Password</label>
+            <input id="admin-password" name="password" type="password" required>
+
+            <div id="admin-login-status" class="form-status" role="status" aria-live="polite"></div>
+            <button class="btn" type="submit">Sign In as Admin</button>
+          </form>
+        </div>
+        <div class="panel">
+          <p class="panel-kicker">Security Notes</p>
+          <ul>
+            <li>Admin session expires automatically.</li>
+            <li>Change default admin password in <code>/api/admin/config.php</code>.</li>
+            <li>Only authenticated admin can view request data.</li>
+          </ul>
+          <a class="btn btn-small btn-outline" href="/">Back to Home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/static/admin-auth.js"></script>
+</body>
+</html>

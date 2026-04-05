@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | SM SOLUTIONS</title>
+  <link rel="icon" href="/static/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="section">
+      <div class="container split">
+        <div class="panel">
+          <p class="panel-kicker">Admin Dashboard</p>
+          <h2>Client Requests</h2>
+          <p id="admin-welcome">Loading admin session...</p>
+        </div>
+        <div class="panel">
+          <p class="panel-kicker">Actions</p>
+          <div class="footer-cta-row">
+            <button id="refresh-requests" class="btn btn-small" type="button">Refresh</button>
+            <button id="admin-logout" class="btn btn-small btn-outline" type="button">Logout</button>
+          </div>
+          <div id="admin-dashboard-status" class="form-status" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="panel">
+          <p class="panel-kicker">Appointments</p>
+          <div id="appointments-list" class="admin-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="panel">
+          <p class="panel-kicker">Contact Messages</p>
+          <div id="contacts-list" class="admin-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/static/admin-auth.js"></script>
+</body>
+</html>

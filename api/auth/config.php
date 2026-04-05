@@ -19,6 +19,8 @@ ini_set("log_errors", "1");
 ini_set("error_log", __DIR__ . "/../../form-errors.log");
 error_reporting(E_ALL);
 
+$auth_google_client_id = "REPLACE_WITH_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+
 function auth_db_connection(): mysqli
 {
     $db_host = "localhost";
@@ -32,6 +34,12 @@ function auth_db_connection(): mysqli
     }
     $mysqli->set_charset("utf8mb4");
     return $mysqli;
+}
+
+function auth_google_client_id(): string
+{
+    global $auth_google_client_id;
+    return trim((string)$auth_google_client_id);
 }
 
 function auth_bootstrap_tables(mysqli $db): void
@@ -57,6 +65,33 @@ function auth_bootstrap_tables(mysqli $db): void
         INDEX idx_client_sessions_user_id (user_id),
         INDEX idx_client_sessions_expires_at (expires_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+}
+
+function auth_fetch_json(string $url): ?array
+{
+    $body = false;
+    if (function_exists("curl_init")) {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        $body = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $context = stream_context_create([
+            "http" => [
+                "method" => "GET",
+                "timeout" => 10,
+            ],
+        ]);
+        $body = file_get_contents($url, false, $context);
+    }
+
+    if (!is_string($body) || trim($body) === "") {
+        return null;
+    }
+
+    $json = json_decode($body, true);
+    return is_array($json) ? $json : null;
 }
 
 function auth_json_body(): array
