@@ -31,6 +31,8 @@ $preferred_date = trim($_POST["preferred_date"] ?? "");
 $preferred_time = trim($_POST["preferred_time"] ?? "");
 $city = trim($_POST["city"] ?? "");
 $notes = trim($_POST["notes"] ?? "");
+$required_doc_count = intval($_POST["required_doc_count"] ?? 0);
+$required_doc_labels = trim($_POST["required_doc_labels"] ?? "");
 
 if (empty($_POST) && empty($_FILES) && !empty($_SERVER["CONTENT_LENGTH"])) {
     echo "Upload too large. Please reduce file size and try again.";
@@ -160,9 +162,13 @@ $collect_uploaded_files = function ($field_name, $group_label = "extra") use ($u
 $mandatory_uploads = $collect_uploaded_files("mandatory_documents", "mandatory");
 $extra_uploads = $collect_uploaded_files("documents", "extra");
 
-if ($is_appointment && count($mandatory_uploads["meta"]) < 3) {
+if ($required_doc_count < 1 || $required_doc_count > 6) {
+    $required_doc_count = 3;
+}
+
+if ($is_appointment && count($mandatory_uploads["meta"]) < $required_doc_count) {
     http_response_code(400);
-    echo "Please upload all mandatory documents.";
+    echo "Please upload all required documents for the selected service.";
     exit;
 }
 
@@ -443,6 +449,9 @@ $mail_body .= "Phone: " . $phone . "\n";
 if ($is_appointment) {
     $mail_body .= "Service: " . $service_type . "\n";
     $mail_body .= "City: " . $city . "\n";
+    if ($required_doc_labels !== "") {
+        $mail_body .= "Required documents by service: " . $required_doc_labels . "\n";
+    }
     if ($notes !== "") {
         $mail_body .= "Notes: " . $notes . "\n";
     }
